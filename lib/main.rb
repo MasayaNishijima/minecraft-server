@@ -1,5 +1,6 @@
 require './lib/token'
 require './lib/server'
+require './lib/object_storage'
 
 token = Token.new
 
