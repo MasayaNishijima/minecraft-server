@@ -8,4 +8,9 @@ puts "起動中のサーバー台数: #{Server.count(token: token)}"
 puts "オブジェクトストレージのコンテナ情報: #{ObjectStorageContainer.containers_info(token: token)}"
 
 container = ObjectStorageContainer.new(token: token, container_name: 'test', new: false)
-p container.get_container_objects_info
+
+puts "#{container.container_name}のオブジェクト一覧: #{container.get_container_objects_info}"
+
+p container.put_object(file_name: 'sample.txt')
+
+puts "#{container.container_name}のオブジェクト一覧: #{container.get_container_objects_info}"
