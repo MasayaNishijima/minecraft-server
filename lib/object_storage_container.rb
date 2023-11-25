@@ -42,12 +42,25 @@ class ObjectStorageContainer
 		headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
 
 		file = File.read("#{directory}/#{file_name}")
+		p file.size
 		response = https.put(uri.path, file, headers)
+
+		raise StandardError, "failed to put object. response code: #{response.code}" unless response.code == '201'
+	end
+
+	def get_object(file_name:)
+		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}/#{file_name}")
+		https = Net::HTTP.new(uri.host, uri.port)
+		https.use_ssl = true
+
+		headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
+
+		response = https.get(uri.path, headers)
 
 		p response.code
 		p response.body
 
-		raise StandardError, "failed to put object. response code: #{response.code}" unless response.code == '201'
+		raise StandardError, "failed to get object. response code: #{response.code}" unless response.code == '200'
 	end
 
 	private
