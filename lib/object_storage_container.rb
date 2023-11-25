@@ -41,10 +41,14 @@ class ObjectStorageContainer
 
 		headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
 
-		file = File.read("#{directory}/#{file_name}")
-		p file.size
-		response = https.put(uri.path, file, headers)
-
+		https.start do |https|
+			request = Net::HTTP::Put.new(uri.path, headers)
+			File.open("#{directory}/#{file_name}", 'rb') do |file|
+				request.body_stream = file
+				request.content_length = file.size
+				response = https.request(request)
+			end
+		end
 		raise StandardError, "failed to put object. response code: #{response.code}" unless response.code == '201'
 	end
 
@@ -57,10 +61,9 @@ class ObjectStorageContainer
 
 		response = https.get(uri.path, headers)
 
-		p response.code
-		p response.body
-
 		raise StandardError, "failed to get object. response code: #{response.code}" unless response.code == '200'
+
+		response.body
 	end
 
 	private

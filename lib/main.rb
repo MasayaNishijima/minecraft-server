@@ -11,12 +11,12 @@ container = ObjectStorageContainer.new(token: token, container_name: 'test', new
 
 puts "#{container.container_name}のオブジェクト一覧: #{container.get_container_objects_info}"
 
-p container.put_object(file_name: 'sample.txt')
-p container.get_object(file_name: 'sample.txt')
+# p container.put_object(file_name: 'sample.txt')
+# p container.get_object(file_name: 'sample.txt')
 
-container.put_object(file_name: 'chiku_mine_ftb_uni.zip')
+# container.put_object(file_name: 'chiku_mine_ftb_uni.zip')
 
 puts "#{container.container_name}のオブジェクト一覧: #{container.get_container_objects_info}"
 
-# File.write('./chiku_mine_ftb_uni_after.zip', container.get_object(file_name: 'chiku_mine_ftb_uni.zip'))
-# puts "#{container.container_name}のオブジェクト一覧: #{container.get_container_objects_info}"
+File.write('./chiku_mine_ftb_uni_after.zip', container.get_object(file_name: 'chiku_mine_ftb_uni.zip'))
+puts "#{container.container_name}のオブジェクト一覧: #{container.get_container_objects_info}"
