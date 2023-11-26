@@ -58,19 +58,26 @@ class ObjectStorageContainer
 		end
 	end
 
-	# コンテナ内のオブジェクトを取得する。
-	def get_object(object_name:)
+	# コンテナ内のオブジェクトを取得してファイルに保存する。(ファイル名と別のオブジェクト名を指定する場合は、file_name引数にファイル名を指定する)
+	def get_object(object_name:, directory: '.', file_name: object_name)
 		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}/#{object_name}")
 		https = Net::HTTP.new(uri.host, uri.port)
 		https.use_ssl = true
 
 		headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
 
-		response = https.get(uri.path, headers)
+		https.start do |https|
+			request = Net::HTTP::Get.new(uri.path, headers)
+			https.request(request) do |response|
+				File.open("#{directory}/#{file_name}", 'wb') do |file|
+					response.read_body do |chunk|
+						file.write(chunk)
+					end
+				end
+				raise StandardError, "failed to get object. response code: #{response.code}" unless response.code == '200'
+			end
 
-		raise StandardError, "failed to get object. response code: #{response.code}" unless response.code == '200'
-
-		response.body
+		end
 	end
 
 	# コンテナ内のオブジェクトを削除する。
