@@ -26,7 +26,7 @@ puts "#{container.container_name}のオブジェクト一覧: #{container.get_co
 
 puts "オブジェクトストレージのコンテナ情報: #{ObjectStorageContainer.containers_info(token: token)}"
 
-container2 = ObjectStorageContainer.new(token: token, container_name: 'test', new: false)
-container2.delete_container
+# container2 = ObjectStorageContainer.new(token: token, container_name: 'test', new: false)
+# container2.delete_container(with_objects: true)
 
 puts "オブジェクトストレージのコンテナ情報: #{ObjectStorageContainer.containers_info(token: token)}"

@@ -1,12 +1,17 @@
+# オブジェクトストレージを操作するためのクラス。
+# コンテナ単位でインスタンスを使用するように設計
 class ObjectStorageContainer
+	# コンテナ名を示す文字列インスタンス変数(コンテナの詳細情報はインスタンスには保持しない)
 	attr_reader :container_name
 
+	# new引数がtrueの場合、コンテナを新規作成する。
 	def initialize(token:, container_name:, new: false)
 		@token = token
 		@container_name = container_name
 		create_container if new
 	end
 
+	# オブジェクトストレージのコンテナ情報を取得する。
 	def self.containers_info(token:)
 		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{token.tenant_id}")
     https = Net::HTTP.new(uri.host, uri.port)
@@ -20,7 +25,7 @@ class ObjectStorageContainer
     JSON.parse(response.body)
 	end
 
-
+	# コンテナ内のオブジェクト情報を取得する。
 	def get_container_objects_info
 		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}")
 		https = Net::HTTP.new(uri.host, uri.port)
@@ -34,6 +39,7 @@ class ObjectStorageContainer
 		JSON.parse(response.body)
 	end
 
+	# コンテナにオブジェクトをアップロードする。(ファイル名と別のオブジェクト名を指定する場合は、object_name引数にオブジェクト名を指定する)
 	def put_object(directory: '.', file_name:, object_name: file_name)
 		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}/#{object_name}")
 		https = Net::HTTP.new(uri.host, uri.port)
@@ -52,6 +58,7 @@ class ObjectStorageContainer
 		end
 	end
 
+	# コンテナ内のオブジェクトを取得する。
 	def get_object(object_name:)
 		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}/#{object_name}")
 		https = Net::HTTP.new(uri.host, uri.port)
@@ -66,6 +73,7 @@ class ObjectStorageContainer
 		response.body
 	end
 
+	# コンテナ内のオブジェクトを削除する。
 	def delete_object(object_name:)
 		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}/#{object_name}")
 		https = Net::HTTP.new(uri.host, uri.port)
@@ -78,11 +86,10 @@ class ObjectStorageContainer
 		raise StandardError, "failed to delete object. response code: #{response.code}" unless response.code == '204'
 	end
 
-	def delete_container()
-		# curl -i -X DELETE \
-		# -H "Accept: application/json" \
-		# -H "X-Auth-Token: 2c6f2de2126a4102b38368c32e7043db" \
-		# https://object-storage.tyo1.conoha.io/v1/nc_cc54f7476b8e444bad238a943a94ccdf/container
+	# コンテナを削除する。(with_objects引数がtrueの場合、コンテナにオブジェクトが存在する場合も削除を実行する)
+	def delete_container(with_objects: false)
+		# コンテナ内のオブジェクトを削除する処理(with_objects引数がtrueの場合のみ実行)
+		get_container_objects_info.each { |object| delete_object(object_name:  object['name']) } if with_objects
 
 		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}")
 		https = Net::HTTP.new(uri.host, uri.port)
@@ -97,6 +104,7 @@ class ObjectStorageContainer
 
 	private
 
+	# コンテナを新規作成する。
 	def create_container
 		uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}")
 		https = Net::HTTP.new(uri.host, uri.port)
