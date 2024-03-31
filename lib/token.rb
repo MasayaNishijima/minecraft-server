@@ -20,7 +20,7 @@ class Token
   private
 
   def get_token
-    uri = URI.parse('https://identity.tyo1.conoha.io/v2.0/tokens')
+    uri = URI.parse('https://identity.c3j1.conoha.io/v3/auth/tokens')
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
@@ -39,3 +39,9 @@ class Token
     json['access']['token']
   end
 end
+
+{ auth: {
+  identity: { methods: ['password'],
+              password: { user: { id: ENV['CONOHA_API_USER_ID'],
+                                  password: ENV['CONOHA_API_USER_PASSWORD'] } } }, scope: { project: { id: ENV['CONOHA_API_TENANT_ID'] } }
+} }
