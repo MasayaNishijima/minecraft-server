@@ -2,6 +2,7 @@ require 'dotenv'
 require 'net/http'
 require 'json'
 
+# APIへアクセスするためのトークンを取得・管理するためのクラス
 class Token
   Dotenv.load
 

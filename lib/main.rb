@@ -9,4 +9,3 @@ puts "オブジェクトストレージのコンテナ情報: #{ObjectStorageCon
 
 # container = ObjectStorageContainer.new(token: token, container_name: 'test', new: false)
 # puts "#{container.container_name}のオブジェクト一覧: #{container.get_container_objects_info}"
-

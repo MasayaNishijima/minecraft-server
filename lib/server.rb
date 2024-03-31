@@ -1,13 +1,14 @@
 require 'net/http'
 require 'json'
 
+# VPSサーバーの情報取得・制御するためのクラス
 class Server
   def self.count(token:)
     servers_info(token: token).count
   end
 
   def self.servers_info(token:)
-    uri = URI.parse("https://compute.c3j1.conoha.io/v2.1/servers")
+    uri = URI.parse('https://compute.c3j1.conoha.io/v2.1/servers')
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 

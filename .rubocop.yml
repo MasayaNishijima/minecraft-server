@@ -1,0 +1,12 @@
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/AbcSize:
+  Max: 25
