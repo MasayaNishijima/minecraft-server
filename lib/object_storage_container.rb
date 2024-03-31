@@ -13,11 +13,11 @@ class ObjectStorageContainer
 
   # オブジェクトストレージのコンテナ情報を取得する。
   def self.containers_info(token:)
-    uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{token.tenant_id}")
+    uri = URI.parse("https://object-storage.c3j1.conoha.io/v1/AUTH_#{token.tenant_id}")
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => token.id }
+    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => token.to_s }
 
     response = https.get(uri.path, headers)
     raise StandardError, "failed to get containers info. response code: #{response.code}" unless response.code == '200'
@@ -27,11 +27,11 @@ class ObjectStorageContainer
 
   # コンテナ内のオブジェクト情報を取得する。
   def get_container_objects_info
-    uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}")
+    uri = URI.parse("https://object-storage.c3j1.conoha.io/v1/AUTH_#{@token.tenant_id}/#{@container_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
+    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.to_s }
 
     response = https.get(uri.path, headers)
     raise StandardError, "failed to get container. response code: #{response.code}" unless response.code == '200'
@@ -41,11 +41,11 @@ class ObjectStorageContainer
 
   # コンテナにオブジェクトをアップロードする。(ファイル名と別のオブジェクト名を指定する場合は、object_name引数にオブジェクト名を指定する)
   def put_object(file_name:, directory: '.', object_name: file_name)
-    uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}/#{object_name}")
+    uri = URI.parse("https://object-storage.c3j1.conoha.io/v1/AUTH_#{@token.tenant_id}/#{@container_name}/#{object_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
+    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.to_s }
 
     https.start do |https|
       request = Net::HTTP::Put.new(uri.path, headers)
@@ -60,11 +60,11 @@ class ObjectStorageContainer
 
   # コンテナ内のオブジェクトを取得してファイルに保存する。(ファイル名と別のオブジェクト名を指定する場合は、file_name引数にファイル名を指定する)
   def get_object(object_name:, directory: '.', file_name: object_name)
-    uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}/#{object_name}")
+    uri = URI.parse("https://object-storage.c3j1.conoha.io/v1/AUTH_#{@token.tenant_id}/#{@container_name}/#{object_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
+    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.to_s }
 
     https.start do |https|
       request = Net::HTTP::Get.new(uri.path, headers)
@@ -81,11 +81,11 @@ class ObjectStorageContainer
 
   # コンテナ内のオブジェクトを削除する。
   def delete_object(object_name:)
-    uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}/#{object_name}")
+    uri = URI.parse("https://object-storage.c3j1.conoha.io/v1/AUTH_#{@token.tenant_id}/#{@container_name}/#{object_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
+    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.to_s }
 
     response = https.delete(uri.path, headers)
 
@@ -97,11 +97,11 @@ class ObjectStorageContainer
     # コンテナ内のオブジェクトを削除する処理(with_objects引数がtrueの場合のみ実行)
     get_container_objects_info.each { |object| delete_object(object_name: object['name']) } if with_objects
 
-    uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}")
+    uri = URI.parse("https://object-storage.c3j1.conoha.io/v1/AUTH_#{@token.tenant_id}/#{@container_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
+    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.to_s }
 
     response = https.delete(uri.path, headers)
 
@@ -112,11 +112,11 @@ class ObjectStorageContainer
 
   # コンテナを新規作成する。
   def create_container
-    uri = URI.parse("https://object-storage.tyo1.conoha.io/v1/nc_#{@token.tenant_id}/#{@container_name}")
+    uri = URI.parse("https://object-storage.c3j1.conoha.io/v1/AUTH_#{@token.tenant_id}/#{@container_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.id }
+    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => @token.to_s }
 
     response = https.put(uri.path, nil, headers)
     raise StandardError, "failed to put container. response code: #{response.code}" unless response.code == '201'

@@ -7,11 +7,11 @@ class Server
   end
 
   def self.servers_info(token:)
-    uri = URI.parse("https://compute.tyo1.conoha.io/v2/#{token.tenant_id}/servers")
+    uri = URI.parse("https://compute.c3j1.conoha.io/v2.1/servers")
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => token.id }
+    headers = { 'Accept' => 'application/json', 'X-Auth-Token' => token.to_s }
 
     response = https.get(uri.path, headers)
     raise StandardError, "failed to get server info. response code: #{response.code}" unless response.code == '200'

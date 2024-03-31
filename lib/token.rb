@@ -9,12 +9,12 @@ class Token
     @token = get_token
   end
 
-  def id
-    @token['id']
+  def to_s
+    @token
   end
 
   def tenant_id
-    @token['tenant']['id']
+    ENV['CONOHA_API_TENANT_ID']
   end
 
   private
@@ -24,24 +24,17 @@ class Token
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
-    parms = { 'auth' => {
-      'passwordCredentials' => { 'username' => ENV['CONOHA_API_USER_ID'],
-                                 'password' => ENV['CONOHA_API_USER_PASSWORD'] },
-      'tenantId' => ENV['CONOHA_API_TENANT_ID']
+    prams = { auth: {
+      identity: { methods: ['password'],
+                  password: { user: { id: ENV['CONOHA_API_USER_ID'],
+                                      password: ENV['CONOHA_API_USER_PASSWORD'] } } }, scope: { project: { id: tenant_id } } # rubocop:disable Layout/LineLength
     } }
     headers = { 'Accept' => 'application/json' }
 
-    response = https.post(uri.path, parms.to_json, headers)
+    response = https.post(uri.path, prams.to_json, headers)
 
-    raise StandardError, "failed to get token. response code: #{response.code}" unless response.code == '200'
+    raise StandardError, "failed to get token. response code: #{response.code}" unless response.code == '201'
 
-    json = JSON.parse(response.body)
-    json['access']['token']
+    response.header['X-Subject-Token']
   end
 end
-
-{ auth: {
-  identity: { methods: ['password'],
-              password: { user: { id: ENV['CONOHA_API_USER_ID'],
-                                  password: ENV['CONOHA_API_USER_PASSWORD'] } } }, scope: { project: { id: ENV['CONOHA_API_TENANT_ID'] } }
-} }
