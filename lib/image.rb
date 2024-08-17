@@ -20,7 +20,7 @@ class Image
     JSON.parse(response.body)['images']
   end
 
-  def self.images_names(token:)
-    images_info(token: token).map { |image| image['name'] }
+  def self.images_name_and_id(token:)
+    images_info(token: token).map { |image| [image['name'], image['id']] }
   end
 end
