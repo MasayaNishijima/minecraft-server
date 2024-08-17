@@ -21,3 +21,8 @@ p Image.images_name_and_id(token: token)
 # volume = Volume.new(token: token, volume_name: 'test')
 # volume.delete
 # puts "ボリュームの個数: #{Volume.count(token: token)}"
+
+# pp Server.plans(token: token).map { |plan| [plan['name'], plan['id']] }
+
+# Server.new(token: token, server_name: 'test', new: false)
+# puts "起動中のサーバー台数: #{Server.count(token: token)}"

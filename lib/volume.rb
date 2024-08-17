@@ -3,11 +3,13 @@ require 'json'
 
 # ボリュームの情報取得・制御するためのクラス()
 class Volume
+  attr_reader :volume_id
+
   def initialize(token:, volume_name:, new: false)
     @token = token
     @volume_name = volume_name
     create_volume if new
-    @volume_id = self.class.volumes_info(token: token).find { |volume| volume['name'] == volume_name }['id']
+    @volume_id = self.class.volumes_info(token: token).find { |volume| volume['name'] == @volume_name }['id']
   end
 
   def self.count(token:)
