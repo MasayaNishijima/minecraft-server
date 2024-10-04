@@ -43,6 +43,10 @@ class Server
     JSON.parse(response.body)['flavors']
   end
 
+  def delete
+    uri = URI.parse("https://compute.c3j1.conoha.io/v2.1/servers/#{@server_id}")
+  end
+
   private
 
   def create_server # rubocop:disable Metrics/MethodLength
